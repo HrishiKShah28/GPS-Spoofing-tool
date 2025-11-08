@@ -1,0 +1,5 @@
+{
+  "name": "GPS Anti-Drone Defense Simulator",
+  "description": "An educational web application simulating GPS spoofing and counter-drone technologies. It features an interactive 2D map, various defense scenarios, real-time telemetry, and comprehensive explanations of GPS fundamentals.",
+  "requestFramePermissions": []
+}
