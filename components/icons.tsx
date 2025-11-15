@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 type IconProps = React.SVGProps<SVGSVGElement>;
@@ -55,5 +56,13 @@ export const ErrorIcon: React.FC<IconProps> = (props) => (
 export const ThreatIcon: React.FC<IconProps> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+);
+
+export const DroneIcon: React.FC<IconProps> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.375a6.375 6.375 0 1 0 0-12.75 6.375 6.375 0 0 0 0 12.75Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.375h.008v.008H12v-.008ZM12 5.625h.008v.008H12V5.625Zm-6.375 6.375h.008v.008h-.008v-.008Zm12.75 0h.008v.008h-.008v-.008Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5.625 5.625 18.375 18.375" />
     </svg>
 );

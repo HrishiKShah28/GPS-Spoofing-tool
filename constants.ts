@@ -1,19 +1,28 @@
-import type { Scenario } from './types';
+import type { Scenario, SpoofedZone, Vector2D } from './types';
 
 export const CANVAS_WIDTH = 800;
 export const CANVAS_HEIGHT = 600;
 
-export const PROTECTED_ZONE = { x: CANVAS_WIDTH / 2, y: CANVAS_HEIGHT / 2, radius: 80 };
-export const SAFE_ZONE = { x: CANVAS_WIDTH * 0.8, y: CANVAS_HEIGHT * 0.8, radius: 60 };
-export const DRONE_START_POS = { x: CANVAS_WIDTH - 50, y: 50 };
+export const SENSITIVE_AREA = { x: CANVAS_WIDTH / 2, y: CANVAS_HEIGHT / 2, radius: 80 };
+export const SPOOFED_ZONES: SpoofedZone[] = [
+  { id: 'zone-a', name: 'Area A (Landing Pad)', x: CANVAS_WIDTH * 0.2, y: CANVAS_HEIGHT * 0.2, radius: 60 },
+  { id: 'zone-b', name: 'Area B (Field)', x: CANVAS_WIDTH * 0.2, y: CANVAS_HEIGHT * 0.8, radius: 60 },
+  { id: 'zone-c', name: 'Area C (Rooftop)', x: CANVAS_WIDTH * 0.8, y: CANVAS_HEIGHT * 0.8, radius: 60 },
+];
 export const WARNING_DISTANCE = 200;
+
+export const CELL_TOWERS: Vector2D[] = [
+    { x: 50, y: 550 },
+    { x: 750, y: 50 },
+    { x: 70, y: 70 },
+];
 
 
 export const SCENARIOS: Scenario[] = [
   { 
     id: 'bluetooth', 
     name: 'Bluetooth Drone', 
-    description: 'Short-range, fast, and low-flying threat.', 
+    description: 'A **short-range**, **fast**, and **low-flying** threat. Difficult to detect until it is very close.', 
     range: '< 100m', 
     speed: 0.8, 
     altitude: 50,
@@ -23,7 +32,7 @@ export const SCENARIOS: Scenario[] = [
   { 
     id: 'wifi', 
     name: 'WiFi Drone', 
-    description: 'Medium-range commercial drone.', 
+    description: 'A **medium-range** commercial drone, often used for unauthorized photography or package delivery.', 
     range: '100-500m', 
     speed: 0.6, 
     altitude: 100,
@@ -33,7 +42,7 @@ export const SCENARIOS: Scenario[] = [
   { 
     id: 'satellite', 
     name: 'Satellite GPS Drone', 
-    description: 'Long-range surveillance drone.', 
+    description: 'A **long-range** surveillance drone that is slow but operates at high altitudes, making it a persistent threat.', 
     range: 'Global', 
     speed: 0.4, 
     altitude: 200,
@@ -43,7 +52,7 @@ export const SCENARIOS: Scenario[] = [
   { 
     id: 'geofence', 
     name: 'Geo-Fenced Drone', 
-    description: 'Programmed to avoid specific zones.', 
+    description: 'An **automated** drone programmed to avoid specific zones. Its predictability is its weakness.', 
     range: 'Configurable', 
     speed: 0.7, 
     altitude: 75,
@@ -54,22 +63,22 @@ export const SCENARIOS: Scenario[] = [
 
 export const SCENARIO_BRIEFINGS = {
   bluetooth: {
-    ingress: "**Status: Ingress.** A high-speed, low-altitude drone has been detected on a direct course for the protected zone.",
+    ingress: "**Status: Ingress.** A high-speed, low-altitude drone has been detected on a direct course for the sensitive area.",
     detected: "**Status: Threat Detected!** The drone is in critical range. Activate the GPS spoofer now.",
-    defense_active: "**Status: Defense Active.** Counterfeit GPS signal is broadcasting, diverting the drone towards the Safe Zone. Path correction is in progress.",
-    neutralized: "**Status: Threat Neutralized.** The drone has been successfully diverted into the designated safe area."
+    defense_active: "**Status: Defense Active.** Counterfeit GPS signal is broadcasting, diverting the drone towards the selected Spoofed Area. Path correction is in progress.",
+    neutralized: "**Status: Threat Neutralized.** The drone has been successfully diverted into the designated spoofed area."
   },
   wifi: {
     ingress: "**Status: Ingress.** A commercial-grade WiFi drone is approaching. Monitor its trajectory.",
     detected: "**Status: Threat Detected!** The drone has breached the outer perimeter. Prepare to engage countermeasures.",
-    defense_active: "**Status: Defense Active.** The spoofer is active, shifting the drone's perceived position. Its actual trajectory is now curving toward the Safe Zone.",
-    neutralized: "**Status: Threat Neutralized.** The drone's navigation has been successfully compromised, leading it into the safe zone."
+    defense_active: "**Status: Defense Active.** The spoofer is active, shifting the drone's perceived position. Its actual trajectory is now curving toward the Spoofed Area.",
+    neutralized: "**Status: Threat Neutralized.** The drone's navigation has been successfully compromised, leading it into the spoofed area."
   },
   satellite: {
     ingress: "**Status: Ingress.** A long-range surveillance drone is on approach. Awaiting optimal engagement window.",
     detected: "**Status: Threat Detected!** The drone is entering the effective range of our ground-based spoofer. It is now vulnerable.",
     defense_active: "**Status: Defense Active.** Broadcasting a powerful, localized GPS signal to overpower the satellite link. Its flight path is being altered.",
-    neutralized: "**Status: Threat Neutralized.** The drone has been successfully steered into the safe diversion zone."
+    neutralized: "**Status: Threat Neutralized.** The drone has been successfully steered into the spoofed diversion area."
   },
   geofence: {
     ingress: "**Status: Ingress.** An automated drone with geo-fencing is approaching. We will override its instructions.",
@@ -86,8 +95,8 @@ export const THEORY_CONTENT = [
       content: "Global Positioning System (GPS) is a satellite-based navigation system. A receiver on Earth determines its position by measuring the time it takes for signals to travel from multiple satellites. With signals from at least four satellites, the receiver can calculate its 3D position (latitude, longitude, altitude) through a process called trilateration. Each satellite signal defines a sphere with the satellite at its center; the intersection of these spheres pinpoints the receiver's location."
     },
     {
-      title: "GPS Spoofing Techniques",
-      content: "GPS spoofing is an attack where a malicious actor broadcasts counterfeit GPS signals to deceive a receiver. There are two main techniques: \n1. **Signal Overpowering:** A powerful transmitter near the target broadcasts fake signals that drown out the legitimate, weaker satellite signals. \n2. **Coordinate Shifting:** The attacker subtly introduces false timing data into the counterfeit signals, causing the receiver to calculate a slightly incorrect position. Over time, this offset can be increased to divert the target without triggering immediate alarms."
+      title: "GPS Spoofing vs. SIM Control",
+      content: "GPS spoofing is an attack where counterfeit GPS signals deceive a receiver. However, not all drones rely solely on GPS. \n\n1. **GPS-Controlled Drones:** These are vulnerable to spoofing, which can alter their perceived location and divert them, as simulated here. \n\n2. **SIM-Based Drones:** These drones use cellular networks (like 4G/5G) for command, control, and sometimes positioning (A-GPS). They are largely immune to traditional GPS spoofing because their primary control link is independent of satellite navigation signals. Countering them requires different techniques like signal jamming or network-level intervention, which are outside the scope of this GPS-focused simulation."
     },
     {
       title: "Detection & Countermeasures",
@@ -95,7 +104,7 @@ export const THEORY_CONTENT = [
     },
     {
       title: "Key Mathematical Formulas",
-      content: "Several formulas are crucial in GPS and defense calculations: \n- **Haversine Formula:** Calculates the great-circle distance between two points on a sphere given their longitudes and latitudes. Used for accurate distance measurement. \n- **Position Error (ε):** ε = √[(Δx)² + (Δy)² + (Δz)²]. Measures the absolute distance between the drone's true position and its spoofed, perceived position. \n- **Vector to Target (θ):** θ = atan2(targetY - droneY, targetX - droneX). Calculates the angle needed to direct the drone towards a specific coordinate, essential for path correction."
+      content: "Several formulas are crucial in GPS and defense calculations: \n- **Line-Circle Intersection:** Used to determine if a drone's path will cross a sensitive area, enabling avoidance maneuvers. \n- **Position Error (ε):** ε = √[(Δx)² + (Δy)²]. Measures the absolute distance between the drone's true position and its spoofed, perceived position. \n- **Vector to Target (θ):** θ = atan2(targetY - droneY, targetX - droneX). Calculates the angle needed to direct the drone towards a specific coordinate, essential for path correction."
     },
     {
         title: "Disclaimer: Educational Use Only",
